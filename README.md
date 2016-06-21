@@ -56,6 +56,11 @@ their "handler" for when the port finishes, but that's okay by
 my book. If you have serious complaints, you should use sticks
 and rocks instead of your computer.
 
+> It may be easier to use
+> [Shmookey's Cmd.Extra](http://package.elm-lang.org/packages/shmookey/cmd-extra/1.0.0/Cmd-Extra)
+> instead of constantly doing `Task.perform Debug.crash identity << Task.succeed`
+> all over teh place
+
 ```js
 app.ports.makeHash.subscribe(function(threadedInput) {
   var threadedOutput = {
