@@ -111,7 +111,7 @@ update : (Threaded i -> Cmd (Msg i o a))
 update outgoingPort action model =
   case action of
     Call x onComplete ->
-      let (x', model') = mkThreaded x
+      let (x', model') = mkThreaded x model
       in  ( { model' | threads = Dict.insert x'.threadId onComplete model'.threads }
           , Cmd.map Err <| outgoingPort x'
           )
