@@ -19,7 +19,7 @@ module Threading exposing
 -}
 
 
-import Dict exposing (Dict)
+import IntDict exposing (IntDict)
 
 
 {-| -}
@@ -84,12 +84,12 @@ type Msg i o a
 {-| -}
 type alias Model o a =
   { threadId : ThreadId
-  , threads  : Dict ThreadId (o -> Cmd a)
+  , threads  : IntDict (o -> Cmd a)
   }
 
 {-| -}
 init : Model o a
-init = { threadId = 0, threads = Dict.empty }
+init = { threadId = 0, threads = IntDict.empty }
 
 {-|
 Given an outgoing port that can accept `Threaded` data, I'll build you a
@@ -112,14 +112,14 @@ update outgoingPort action model =
   case action of
     Call x onComplete ->
       let (x', model') = mkThreaded x model
-      in  ( { model' | threads = Dict.insert x'.threadId onComplete model'.threads }
+      in  ( { model' | threads = IntDict.insert x'.threadId onComplete model'.threads }
           , Cmd.map Err <| outgoingPort x'
           )
     GotIncoming x ->
-      case Dict.get x.threadId model.threads of
+      case IntDict.get x.threadId model.threads of
         Nothing -> (model, Cmd.none) -- silent failure
         Just onComplete ->
-          ( { model | threads = Dict.remove x.threadId model.threads }
+          ( { model | threads = IntDict.remove x.threadId model.threads }
           , Cmd.map Ok <| onComplete x.payload
           )
 
